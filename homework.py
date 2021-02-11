@@ -42,7 +42,8 @@ class CaloriesCalculator(Calculator):
         count_cal = self.get_today_stats()
         today_cal = self.limit - count_cal
         if 0 < today_cal < self.limit:
-            return f'Сегодня можно съесть что-нибудь ещё, но с общей калорийностью не более {today_cal} кКал'
+            return f'Сегодня можно съесть что-нибудь ещё,' \
+                   f'но с общей калорийностью не более {today_cal} кКал'
         else:
             return 'Хватит есть!'
 
@@ -65,12 +66,14 @@ class CashCalculator(Calculator):
         elif currency == 'rub' and spent_money > self.limit:
             return f'Денег нет, держись: твой долг - {count_money * -1} руб'
         elif currency == 'eur' and spent_money > self.limit:
-            return f'Денег нет, держись: твой долг - {round(eur_money, 2) * -1} Euro'
+            return f'Денег нет, держись: твой долг' \
+                   f' - {round(eur_money, 2) * -1} Euro'
         elif currency == 'usd' and spent_money > self.limit:
-            return f'Денег нет, держись: твой долг - {round(usd_money, 2) * -1} USD'
+            return f'Денег нет, держись: твой долг' \
+                   f' - {round(usd_money, 2) * -1} USD'
         elif currency == 'rub' and spent_money == self.limit:
-            return f'Денег нет, держись'
+            return 'Денег нет, держись'
         elif currency == 'eur' and spent_money == self.limit:
-            return f'Денег нет, держись'
+            return 'Денег нет, держись'
         elif currency == 'usd' and spent_money == self.limit:
-            return f'Денег нет, держись'
+            return 'Денег нет, держись'
