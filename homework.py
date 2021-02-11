@@ -42,7 +42,7 @@ class CaloriesCalculator(Calculator):
         count_cal = self.get_today_stats()
         today_cal = self.limit - count_cal
         if 0 < today_cal < self.limit:
-            return f'Сегодня можно съесть что-нибудь ещё,' \
+            return f'Сегодня можно съесть что-нибудь ещё, ' \
                    f'но с общей калорийностью не более {today_cal} кКал'
         else:
             return 'Хватит есть!'
