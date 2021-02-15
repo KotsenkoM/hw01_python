@@ -25,8 +25,7 @@ class Calculator:
                    if note.date == self.today)
 
     def remainder(self):
-        get_rem = self.limit - self.get_today_stats()
-        return get_rem
+        return self.limit - self.get_today_stats()
 
     def get_week_stats(self):
         week_ago = self.today - dt.timedelta(days=7)
@@ -67,7 +66,7 @@ class CashCalculator(Calculator):
                 return f'На сегодня осталось {currency_rate} {currency_name}'
             if self.get_today_stats() > self.limit:
                 return (
-                    'Денег нет, держись: ' 
+                    'Денег нет, держись: '
                     f'твой долг - {currency_rate} {currency_name}'
                 )
             if self.get_today_stats() == self.limit:
