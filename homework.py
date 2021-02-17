@@ -15,64 +15,62 @@ class Calculator:
     def __init__(self, limit):
         self.limit = limit
         self.records = []
-        self.today = dt.date.today()
 
     def add_record(self, new_note):
         self.records.append(new_note)
 
     def get_today_stats(self):
+        today = dt.date.today()
         return sum(note.amount for note in self.records
-                   if note.date == self.today)
+                   if note.date == today)
 
     def remainder(self):
         return self.limit - self.get_today_stats()
 
     def get_week_stats(self):
-        week_ago = self.today - dt.timedelta(days=7)
+        today = dt.date.today()
+        week_ago = today - dt.timedelta(days=7)
         return sum(note.amount for note in self.records
-                   if self.today >= note.date >= week_ago)
+                   if today >= note.date >= week_ago)
 
 
 class CaloriesCalculator(Calculator):
     def get_calories_remained(self):
-        if 0 < self.remainder() < self.limit:
+        remaind = self.remainder()
+        if 0 < remaind:
             return (
                 'Сегодня можно съесть что-нибудь ещё, '
-                f'но с общей калорийностью не более {self.remainder()} кКал'
+                f'но с общей калорийностью не более {remaind} кКал'
             )
         return 'Хватит есть!'
 
 
 class CashCalculator(Calculator):
-    RUB_RATE = 1
+    RUB_RATE = 1.0
     EURO_RATE = 88.91
     USD_RATE = 73.27
 
     def get_today_cash_remained(self, currency):
-        try:
-            rub = abs(self.remainder())
-            euro = round(rub / self.EURO_RATE, 2)
-            usd = round(rub / self.USD_RATE, 2)
-            currency_list = {
-                'rub': ('руб', rub),
-                'eur': ('Euro', euro),
-                'usd': ('USD', usd)
-            }
-
-            set_currency = ','.join(set(currency_list.keys()))
-
-            currency_name, currency_rate = currency_list[currency]
-            if 0 < self.get_today_stats() < self.limit:
-                return f'На сегодня осталось {currency_rate} {currency_name}'
-            if self.get_today_stats() > self.limit:
-                return (
-                    'Денег нет, держись: '
-                    f'твой долг - {currency_rate} {currency_name}'
-                )
-            if self.get_today_stats() == self.limit:
-                return 'Денег нет, держись'
-        except KeyError:
-            return (
+        remaind = self.remainder()
+        if remaind == 0:
+            return 'Денег нет, держись'
+        abs_remaind = abs(remaind)
+        currency_list = {
+            'rub': ('руб', self.RUB_RATE),
+            'eur': ('Euro', self.EURO_RATE),
+            'usd': ('USD', self.USD_RATE)
+        }
+        set_currency = ','.join(currency_list.keys())
+        if currency not in currency_list:
+            raise ValueError(
                 f'"{currency}" - валюта неверная, '
                 f'правильные: {set_currency}'
             )
+        currency_name, currency_rate = currency_list[currency]
+        value = round(abs_remaind / currency_rate, 2)
+        if remaind > 0:
+            return f'На сегодня осталось {value} {currency_name}'
+        return (
+            'Денег нет, держись: '
+            f'твой долг - {value} {currency_name}'
+        )
